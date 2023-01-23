@@ -51,6 +51,7 @@ public strictfp class RobotPlayer {
      *            information on its current status. Essentially your portal to interacting with the world.
      **/
     @SuppressWarnings("unused")
+
     public static void run(RobotController rc) throws GameActionException {
 
         // Hello world! Standard output is very useful for debugging.
@@ -76,7 +77,7 @@ public strictfp class RobotPlayer {
                 switch (rc.getType()) {
                     case HEADQUARTERS:     runHeadquarters(rc);  break;
                     case CARRIER:      runCarrier(rc);   break;
-                    case LAUNCHER: runLauncher(rc); break;
+                    case LAUNCHER: LauncherStrat.runLauncher(rc); break;
                     case BOOSTER: // Examplefuncsplayer doesn't use any of these robot types below.
                     case DESTABILIZER: // You might want to give them a try!
                     case AMPLIFIER:       break;
@@ -114,7 +115,7 @@ public strictfp class RobotPlayer {
         // Pick a direction to build in.
         Direction dir = directions[rng.nextInt(directions.length)];
         MapLocation newLoc = rc.getLocation().add(dir);
-        if (rc.canBuildAnchor(Anchor.STANDARD)) {
+        if (rc.canBuildAnchor(Anchor.STANDARD) ) {
             // If we can build an anchor do it!
             rc.buildAnchor(Anchor.STANDARD);
             rc.setIndicatorString("Building anchor! " + rc.getAnchor());
@@ -142,18 +143,19 @@ public strictfp class RobotPlayer {
         if (rc.getAnchor() != null) {
             // If I have an anchor singularly focus on getting it to the first island I see
             int[] islands = rc.senseNearbyIslands();
-            Set<MapLocation> islandLocs = new HashSet<>();
+            Set<MapLocation> islandLocs = new HashSet<>(); //hashset of lists
             for (int id : islands) {
                 MapLocation[] thisIslandLocs = rc.senseNearbyIslandLocations(id);
-                islandLocs.addAll(Arrays.asList(thisIslandLocs));
+                //checks the amount of locations that belong to the island with the specific ID passed in
+                islandLocs.addAll(Arrays.asList(thisIslandLocs)); //adds the array as a list to the hashset
             }
-            if (islandLocs.size() > 0) {
-                MapLocation islandLocation = islandLocs.iterator().next();
+            if (islandLocs.size() > 0) { //if there is a valid island location to move toward
+                MapLocation islandLocation = islandLocs.iterator().next(); //sets the map location for the bot to move towards
                 rc.setIndicatorString("Moving my anchor towards " + islandLocation);
                 while (!rc.getLocation().equals(islandLocation)) {
-                    Direction dir = rc.getLocation().directionTo(islandLocation);
+                    Direction dir = rc.getLocation().directionTo(islandLocation); //gets direction that the rc needs to travel to get to the location
                     if (rc.canMove(dir)) {
-                        rc.move(dir);
+                        rc.move(dir); //starts moving toward the location in the direction they need to go
                     }
                 }
                 if (rc.canPlaceAnchor()) {
@@ -167,9 +169,10 @@ public strictfp class RobotPlayer {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 MapLocation wellLocation = new MapLocation(me.x + dx, me.y + dy);
-                if (rc.canCollectResource(wellLocation, -1)) {
+                if (rc.canCollectResource(wellLocation, -1)) { //-1 means max possible amount from the well (fills up whatever remaining space the carrier has)
+                    //this check above primarily serves to check if the tile is actually a well
                     if (rng.nextBoolean()) {
-                        rc.collectResource(wellLocation, -1);
+                        rc.collectResource(wellLocation, -1); //collects max possible amount from well (fills up carrier)
                         rc.setIndicatorString("Collecting, now have, AD:" + 
                             rc.getResourceAmount(ResourceType.ADAMANTIUM) + 
                             " MN: " + rc.getResourceAmount(ResourceType.MANA) + 
@@ -203,29 +206,4 @@ public strictfp class RobotPlayer {
         }
     }
 
-    /**
-     * Run a single turn for a Launcher.
-     * This code is wrapped inside the infinite loop in run(), so it is called once per turn.
-     */
-    static void runLauncher(RobotController rc) throws GameActionException {
-        // Try to attack someone
-        int radius = rc.getType().actionRadiusSquared;
-        Team opponent = rc.getTeam().opponent();
-        RobotInfo[] enemies = rc.senseNearbyRobots(radius, opponent);
-        if (enemies.length >= 0) {
-            // MapLocation toAttack = enemies[0].location;
-            MapLocation toAttack = rc.getLocation().add(Direction.EAST);
-
-            if (rc.canAttack(toAttack)) {
-                rc.setIndicatorString("Attacking");        
-                rc.attack(toAttack);
-            }
-        }
-
-        // Also try to move randomly.
-        Direction dir = directions[rng.nextInt(directions.length)];
-        if (rc.canMove(dir)) {
-            rc.move(dir);
-        }
-    }
 }
