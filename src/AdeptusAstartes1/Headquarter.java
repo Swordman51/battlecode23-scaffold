@@ -21,7 +21,7 @@ public class Headquarter {
             rc.buildAnchor(Anchor.STANDARD);
             rc.setIndicatorString("Building anchor! " + rc.getAnchor());
         }
-        if (RobotPlayer.turnCount % 2 == 0) {
+        if (RobotPlayer.turnCount % 10 == 0) {
             // Let's try to build a carrier.
             rc.setIndicatorString("Trying to build a carrier");
             if (rc.canBuildRobot(RobotType.CARRIER, newLoc)) {
