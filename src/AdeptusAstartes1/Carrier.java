@@ -13,6 +13,8 @@ public class Carrier {
      */
 
     //TODO write better code to cap points, they seem to be making a difference
+
+    //TODO write a program where the carriers will produce in groups of 8 and camp a well
     static void runCarrier(RobotController rc) throws GameActionException {
         if (rc.getAnchor() != null) {
             // If I have an anchor singularly focus on getting it to the first island I see

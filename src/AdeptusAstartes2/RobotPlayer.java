@@ -117,4 +117,16 @@ public strictfp class RobotPlayer {
             moveRandom(rc);
         }
     }
+
+    static void moveDiagonal(RobotController rc) throws GameActionException{
+        if(rc.canMove(Direction.NORTHEAST)){
+            rc.move(Direction.NORTHEAST);
+        } else if (rc.canMove(Direction.SOUTHEAST)){
+            rc.move(Direction.SOUTHEAST);
+        } else if (rc.canMove(Direction.NORTHWEST)){
+            rc.move(Direction.NORTHWEST);
+        } else if (rc.canMove(Direction.SOUTHWEST)){
+            rc.move(Direction.SOUTHWEST);
+        }
+    }
 }

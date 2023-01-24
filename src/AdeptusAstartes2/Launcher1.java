@@ -55,6 +55,7 @@ public class Launcher1 {
                 if (rc.canAttack(marked.location)) {
                     rc.setIndicatorString("Attacking marked target" + marked.getType());
                     rc.attack(marked.location);
+                    RobotPlayer.moveDiagonal(rc);
                 }
 
             } else {
