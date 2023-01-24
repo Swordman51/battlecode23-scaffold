@@ -1,9 +1,6 @@
 package AdeptusAstartes2;
 
-import battlecode.common.Clock;
-import battlecode.common.Direction;
-import battlecode.common.GameActionException;
-import battlecode.common.RobotController;
+import battlecode.common.*;
 
 import java.util.Random;
 
@@ -109,6 +106,15 @@ public strictfp class RobotPlayer {
         Direction dir = RobotPlayer.directions[RobotPlayer.rng.nextInt(RobotPlayer.directions.length)];
         if (rc.canMove(dir)) {
             rc.move(dir);
+        }
+    }
+
+    static void moveTowards(RobotController rc, MapLocation loc) throws GameActionException{
+        Direction dir = rc.getLocation().directionTo(loc);
+        if (rc.canMove(dir)) {
+            rc.move(dir);
+        } else {
+            moveRandom(rc);
         }
     }
 }
