@@ -4,6 +4,7 @@ import battlecode.common.*;
 
 public class Launcher1 {
     static MapLocation hqLoc;
+    static boolean EASTFeas = true;
     /**
      * Run a single turn for a Launcher.
      * This code is wrapped inside the infinite loop in run(), so it is called once per turn.
@@ -16,7 +17,8 @@ public class Launcher1 {
     //write a program that find the location of an enemy and stores it, then calls other bots over to gank the enemy
         //use the shared array in some way to store this location
 
-
+//TODO implement kiting and seeking and destroying
+        //TODO also maybe write a call for backup function that will call other launchers to kill enemies
 
 
         // Try to attack someone
@@ -72,6 +74,7 @@ public class Launcher1 {
 
         }
         RobotPlayer.moveRandom(rc);
+
         RobotInfo[] visibleEnemies = rc.senseNearbyRobots(-1, opponent);
         // Also try to move randomly.
         if (visibleEnemies.length > 0) {
@@ -107,6 +110,18 @@ public class Launcher1 {
                 hqLoc = robot.getLocation(); //sets hq location for the rest of the game
                 break;
             }
+        }
+    }
+//TODO you can bugnav to symmetry points by assuming symmetry points and trying to get there
+    //use that concept in the method below
+    static void Pathfind(RobotController rc) throws GameActionException{
+        if(rc.canMove(Direction.EAST)){
+            rc.move(Direction.EAST);
+        } else {
+            EASTFeas = false;
+        }
+            if (rc.canMove(Direction.NORTH)){
+            rc.move(Direction.NORTH);
         }
     }
 }
