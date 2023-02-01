@@ -28,6 +28,8 @@ public class Launcher1 {
         int lowestHealth = Integer.MAX_VALUE;
         int smallestDist = Integer.MAX_VALUE;
         RobotInfo marked = null;
+        Communications.reportEnemy(rc);
+        Communications.clearObsoleteEnemies(rc);
 
 
         if (enemies.length > 0) { //if enemies' length is equal to 0, it makes no sense to run the attack command, so you need to set it so that
@@ -61,12 +63,10 @@ public class Launcher1 {
                 }
 
             } else {
-//                Direction dir = hqLoc.directionTo(rc.getLocation());
-//                if (rc.canMove(dir)) {
-//                    rc.move(dir);
-//                } else {
-//                    RobotPlayer.moveRandom(rc);
-//                }
+                for(int j = Communications.STARTING_ISLAND_IDX + 1; j < GameConstants.SHARED_ARRAY_LENGTH; j++){
+                    if(rc.readSharedArray(j) !=0);
+                    Pathing.moveTowards(rc, Communications.intToLocation(rc, rc.readSharedArray(j)));
+                }
                 RobotPlayer.moveRandom(rc);
             }
             //MapLocation toAttack = rc.getLocation().add(Direction.EAST); //attacks one unit to the east using this command
@@ -76,6 +76,7 @@ public class Launcher1 {
         RobotPlayer.moveRandom(rc);
 
         RobotInfo[] visibleEnemies = rc.senseNearbyRobots(-1, opponent);
+
         // Also try to move randomly.
         if (visibleEnemies.length > 0) {
             for (int i = 0; i < visibleEnemies.length; i++) {
@@ -86,7 +87,9 @@ public class Launcher1 {
                         rc.move(dir);
                     }
                 }
+
             }
+
         }
 
         //RobotPlayer.moveRandom(rc);

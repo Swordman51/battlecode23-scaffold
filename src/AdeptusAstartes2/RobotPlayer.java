@@ -72,7 +72,11 @@ public strictfp class RobotPlayer {
                 switch (rc.getType()) {
                     case HEADQUARTERS:     Headquarter1.runHeadquarters(rc);  break;
                     case CARRIER:      Carrier1.runCarrier(rc);   break;
-                    case LAUNCHER: Launcher1.runLauncher(rc); break;
+                    case LAUNCHER:
+                        if(turnCount % 3 == 0) {
+                            Launcher1.runLauncher(rc);
+                        }
+                        break;
                     case BOOSTER: // Examplefuncsplayer doesn't use any of these robot types below.
                     case DESTABILIZER: // You might want to give them a try!
                     case AMPLIFIER:       break;
@@ -128,6 +132,10 @@ public strictfp class RobotPlayer {
         } else if (rc.canMove(Direction.SOUTHWEST)){
             rc.move(Direction.SOUTHWEST);
         }
+    }
+
+    static int calcDistance(MapLocation x, MapLocation y){
+        return ((y.x-x.x)^2 + (y.x-x.x)^2);
     }
 }
 /*

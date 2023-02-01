@@ -18,6 +18,9 @@ public class Carrier1 {
      */
 
     static void runCarrier(RobotController rc) throws GameActionException {
+        if(RobotPlayer.turnCount == 2){
+            Communications.updateHeadquarterInfo(rc);
+        }
 
         if (hqLoc == null) {
             scanHQ(rc);
@@ -37,13 +40,22 @@ public class Carrier1 {
 
         if (anchorMode == true) {
             if(islandLoc == null) {
-                RobotPlayer.moveRandom(rc);
+                //RobotPlayer.moveRandom(rc); used to be moving randomly
+                for(int i = Communications.STARTING_ISLAND_IDX; i < Communications.STARTING_ISLAND_IDX + 35; i++){ //now I can actually use the shared array to check for island locations
+                    //and move toward them as needed
+                    MapLocation islandNearestLoc = Communications.readislandLocation(rc, i);
+                    if(islandNearestLoc != null){
+                        islandLoc = islandNearestLoc;
+                        break;
+                    }
+                }
             } else {
                 Direction dir = rc.getLocation().directionTo(islandLoc);
                 if(rc.canMove(dir)){
                     rc.move(dir);
                 } else {
-                    RobotPlayer.moveTowards(rc, islandLoc);
+                    //RobotPlayer.moveTowards(rc, islandLoc); randomly moving
+                    Pathing.moveTowards(rc, islandLoc); //bugnav move, more efficient
                 }
             }
 
@@ -74,6 +86,7 @@ public class Carrier1 {
                         if (rc.canMove(dir)) {
                             rc.move(dir);
                         }
+                        Communications.tryWriteMessages(rc);
                     }
 
                 } else {
@@ -82,8 +95,9 @@ public class Carrier1 {
                             Direction dir = rc.getLocation().directionTo(wellloc);
                             if (rc.canMove(dir)) {
                                 rc.move(dir);
+                                scanWells(rc);
                             } else {
-                                RobotPlayer.moveTowards(rc, wellloc);
+                                Pathing.moveTowards(rc, wellloc);
                             }
                         }
                     } else {
@@ -156,6 +170,7 @@ public class Carrier1 {
                 }
 
             }
+            Communications.updateIslandInfo(rc, id); //adds the id of the island to the messageQueue to potentially be added to the shared array
         }
     }
 

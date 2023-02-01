@@ -204,6 +204,7 @@ public strictfp class RobotPlayer {
         if (rc.canMove(dir)) {
             rc.move(dir);
         }
+
     }
 
 }
